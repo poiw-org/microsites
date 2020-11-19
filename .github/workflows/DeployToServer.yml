@@ -9,8 +9,8 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
-    runs-on: self-hosted
+  build_on_hermes:
+    runs-on: ['hermes']
     env:
         MJ_APIKEY_PUBLIC: ${{ secrets.MJ_APIKEY_PUBLIC }}
         MJ_APIKEY_PRIVATE: ${{ secrets.MJ_APIKEY_PRIVATE }}
@@ -23,4 +23,19 @@ jobs:
         run: docker-compose build
       - name: Deploy
         run: docker-compose up -d
+  build_on_calliroe:
+    runs-on: ['calliroe']
+    env:
+        MJ_APIKEY_PUBLIC: ${{ secrets.MJ_APIKEY_PUBLIC }}
+        MJ_APIKEY_PRIVATE: ${{ secrets.MJ_APIKEY_PRIVATE }}
+        MONGODB_STRING: ${{ secrets.MONGODB_STRING }}
+        recaptcha: ${{ secrets.recaptcha }}
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build docker images
+        run: docker-compose build
+      - name: Deploy
+        run: docker-compose up -d
+
 
