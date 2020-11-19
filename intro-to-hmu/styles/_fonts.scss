@@ -1,0 +1,30 @@
+@import url(/fonts/fonts.css);
+
+body{
+    font-family: $main_font;
+}
+
+accent{
+    background: $accent_color;
+    color: #fff;
+    padding:5px 20px 5px 20px;
+    border-radius: 3px;
+}
+
+.logo{
+    margin-top:140px;
+    h1{
+        font-size: 25px;
+        font-family: 'Space Mono', monospace;
+    }
+    p{
+        color: grey;
+        margin-top: 20px;
+        font-size: 14px;
+    }
+}
+
+.logo-fp{
+    font-family: 'Space Mono', monospace;
+    margin-top: 40px;
+}
