@@ -52,22 +52,27 @@ class Event extends Component {
         await this.state.recaptchaRef.current.reset()
         recaptcha = await this.state.recaptchaRef.current.executeAsync();
 
+        let message={
+          text: "Έγινε! Έλεγξε το email σου για τον σύνδεσμο επιβεβαίωσης.",
+          variant: 'success'
+        }
+
         await axios
           .post('../../api/register', {
             email: this.state.email,recaptcha
           })
           .catch(e=>{
-            self.setState({
-              message:{
+              message={
                 text: e.response.data,
                 variant: 'danger'
               }
-            })
           })
 
         window.scrollTo(0, 0); 
         this.setState({
             processing: false,
+            registered: true,
+            message
         })
     }
 
@@ -111,12 +116,12 @@ class Event extends Component {
                     <div className="row">
                     <h4 className="col-12">✍️ Εγγραφή στην εκδήλωση</h4>
                     <span className="p-2 col-12"></span>
-                    {this.state.registered ? 'Έχεις ήδη γραφτεί' : (
+                    {this.state.processing || this.state.registered ? '' : (
                       <div className="col-12 row">
                         <InputGroup className="col-12 col-md-9 col-xl-4">
                           <FormControl
-                            placeholder="AM (π.χ. th1234)"
-                            aria-label="AM (π.χ. th1234)"
+                            placeholder="Το ΑΜ σου"
+                            aria-label="Το ΑΜ σου"
                             aria-describedby="hmu-email"
                             max="6"
                             onChange={this.handleChange.bind(this, 'email')}
