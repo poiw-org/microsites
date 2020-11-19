@@ -84,6 +84,8 @@ class Event extends Component {
                   size="invisible"
                   ref={this.state.recaptchaRef}
                 />
+                
+                <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400;600&family=Space+Mono&display=swap" rel="stylesheet"/> 
 
                 {this.state.message.text ? (
                     <Alert variant={this.state.message.variant} style={{borderRadius: 0}}>
