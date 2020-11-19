@@ -4,10 +4,10 @@ services:
         container_name: intro_events
         build: './intro'
         restart: always
-        ports: 
-            - 8080:3000
-        # expose:
-        #     - 3000
+        # ports: 
+        #     - 8080:3000
+        expose:
+            - 3000
         labels:
             - traefik.enable=true
             - traefik.http.routers.microsites_insecure.entrypoints=web
@@ -19,8 +19,8 @@ services:
             - traefik.http.services.microsites.loadbalancer.server.port=3000
             - traefik.docker.network=traefik-proxy    
         networks:
-            # - traefik-proxy
+            - traefik-proxy
             - default
-# networks:
-#   traefik-proxy:
-#     external: true
+networks:
+  traefik-proxy:
+    external: true
