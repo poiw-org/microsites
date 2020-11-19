@@ -11,13 +11,16 @@ on:
 jobs:
   build:
     runs-on: self-hosted
-
+    env:
+        MJ_APIKEY_PUBLIC: ${{ secrets.MJ_APIKEY_PUBLIC }}
+        MJ_APIKEY_PRIVATE: ${{ secrets.MJ_APIKEY_PRIVATE }}
+        MONGODB_STRING: ${{ secrets.MONGODB_STRING }}
+        recaptcha: ${{ secrets.recaptcha }}
     steps:
       - uses: actions/checkout@v2
 
-      - name: Stop running containers
-        run: docker-compose down --remove-orphans
       - name: Build docker images
         run: docker-compose build
       - name: Deploy
         run: docker-compose up -d
+
