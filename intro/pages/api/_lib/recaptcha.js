@@ -6,12 +6,12 @@ module.exports = {
             axios
                 .get(`https://www.google.com/recaptcha/api/siteverify?secret=${process.env.recaptcha}&response=${response}`)
                 .then(({data:{success}})=>{
-                    if(success) resolve()
-                    else reject()
+                    if(success) resolve(true)
+                    else reject(false)
                 })
                 .catch(e=>{
                     //console.log(e.message)
-                    reject()
+                    reject(false)
                 })
         })
     }
