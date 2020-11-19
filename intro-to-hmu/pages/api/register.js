@@ -2,15 +2,19 @@ import {send} from "./_lib/email"
 const karavaki = require('./_lib/karavaki')
 var chance = require('chance')
 chance = new chance()
-const sha256 = require('crypto-js/sha256')
-import log from "./_lib/logs"
-
+import {validate} from './_lib/recaptcha'
 
 
 module.exports = async ({body,query,method},res) => {
     const db = await karavaki()
 
     if (body.email){   
+
+        await validate(body.recaptcha)
+        .catch(e=>{
+            res.status(400).send('Recaptcha calidation failed')
+            throw new Error(e)
+        })
 
         if(body.email.length != 7){
             res.status(400).send('Ο Αριθμός Μητρώου πρέπει να έχει την μορφή thXXXX')

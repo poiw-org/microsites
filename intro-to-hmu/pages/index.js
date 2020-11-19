@@ -1,8 +1,9 @@
 import Logo from '../components/logo'
 import {InputGroup, FormControl, Button, Alert, ProgressBar, Modal} from 'react-bootstrap'
-import {Component} from "react"
+import {Component, createRef} from "react"
 import Head from 'next/head'
 import axios from 'axios'
+import ReCAPTCHA from "react-google-recaptcha";
 
 class Event extends Component {
 
@@ -17,6 +18,7 @@ class Event extends Component {
         this.state = {
           registered: process.browser ? (localStorage.getItem('registered') || false) : false,
           email: '',
+          recaptchaRef: createRef(),
           message: props.verified ? {
             text: 'Η εγγραφή σου ήταν επιτυχής! Σε ευχαριστούμε για το ενδιαφέρον σου. Θα σου στείλουμε οδηγίες για το πως να συμμετέχεις σύντομα.',
             variant: 'success'
@@ -47,9 +49,12 @@ class Event extends Component {
         if(event.preventDefault) event.preventDefault()
         window.scrollTo(0, 0); 
 
+        await this.state.recaptchaRef.current.reset()
+        recaptcha = await this.state.recaptchaRef.current.executeAsync();
+
         await axios
           .post('../../api/register', {
-            email: this.state.email
+            email: this.state.email,recaptcha
           })
           .catch(e=>{
             self.setState({
@@ -69,6 +74,11 @@ class Event extends Component {
     render() {
         return(
             <div>
+                <ReCAPTCHA
+                  sitekey="6Lcp39IZAAAAAFZSr3LpnErH1UTVcYL4SjeZVUx4"
+                  size="invisible"
+                  ref={this.state.recaptchaRef}
+                />
 
                 {this.state.message.text ? (
                     <Alert variant={this.state.message.variant} style={{borderRadius: 0}}>
