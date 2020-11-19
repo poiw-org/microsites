@@ -10,74 +10,63 @@ module.exports = async ({body,query,method},res) => {
         const db = await karavaki()
 
         if (body.email){   
-            console.log('1');
             await validate(body.recaptcha)
             .catch(e=>{
                 res.status(400).send('Recaptcha calidation failed')
                 resolve()
             })
-            console.log('2');
             if(body.email.length != 7){
                 res.status(400).send('Ο Αριθμός Μητρώου πρέπει να έχει την μορφή thXXXX')
-                console.log('3');
                 resolve()
             }else if(body.email.substring(0,2) != 'th'){
                 res.status(400).send('Ο Αριθμός Μητρώου πρέπει να έχει την μορφή thXXXX')
-                console.log('4');
                 resolve()
             }
             else if(parseInt(body.email.substring(2,7)) < 20080){
                 res.status(400).send('Φαίνεται ότι δεν είσαι νεοεισακτέος φοιτητής στο τμήμα.')
-                console.log('5');
                 resolve()
-            }
+            }else{
+                let email = body.email + '@edu.hmu.gr'
 
-            let email = body.email + '@edu.hmu.gr'
+                let alreadyRegistered = await db.collection('parousiasi-tmimatos').findOne({
+                    email
+                })
 
-            let alreadyRegistered = await db.collection('parousiasi-tmimatos').findOne({
-                email
-            })
-
-            console.log('6');
-            console.log(alreadyRegistered)
-            if(alreadyRegistered) {
-                console.log(alreadyRegistered)
-
-                if(alreadyRegistered.verified === true){
-                    res.status(400).send('Μη σπαμάρεις :\'/. Έχεις ήδη γραφτεί.')
-                    console.log('7');
-                    resolve()
-                }else if(alreadyRegistered.verified === false){
-                    res.status(400).send('Έχεις ήδη υποβάλει αίτημα εγγραφής. Έλεγξε το email σου για το link επιβεβαίωσης. Αν αντιμετωπίζεις πρόβλημα, στείλε μας email στο poiw-team@protonmail.com.')
-                    console.log('8');
-                    resolve()
+                if(alreadyRegistered) {
+                    if(alreadyRegistered.verified === true){
+                        res.status(400).send('Μη σπαμάρεις :\'/. Έχεις ήδη γραφτεί.')
+                        resolve()
+                    }else if(alreadyRegistered.verified === false){
+                        res.status(400).send('Έχεις ήδη υποβάλει αίτημα εγγραφής. Έλεγξε το email σου για το link επιβεβαίωσης. Αν αντιμετωπίζεις πρόβλημα, στείλε μας email στο poiw-team@protonmail.com.')
+                        resolve()
+                    }
+                }else{
+                    let token = chance.string({
+                        length: 256,
+                        alpha: true,
+                        numeric: true
+                    })
+    
+                    await db.collection('parousiasi-tmimatos').insertOne({
+                        email,
+                        token,
+                        verified: false
+                    })
+    
+                    console.log('9');
+                    let link = `${process.env.NODE_ENV == "development" ? "http://localhost:3001/api/register?t=" : "https://intro.events.poiw.org/api/register?t="}${token}`
+    
+                    await send({ 
+                        email: email,
+                        text: `Χαιρόμαστε που ενδιαφέρεσαι για την παρουσίασή μας! Μπές σε αυτόν τον σύνδεσμο για να επιβεβαιώσεις την εγγραφή σου στην εκδήλωση: ${link}. Αν έχεις κάποια απορία, μπορείς να μας στείλεις στο poiw-team@protonmail.com.`,
+                        html: `Χαιρόμαστε που ενδιαφέρεσαι για την παρουσίασή μας! Μπές σε αυτόν τον σύνδεσμο για να επιβεβαιώσεις την εγγραφή σου στην εκδήλωση: <a href="${link}">${link}</a>. Αν έχεις κάποια απορία, μπορείς να μας στείλεις στο poiw-team@protonmail.com.`,
+                        subject: " Εγγραφή σε event του po/iw",
+                    })
+                    console.log('10');
+    
+                    res.send("OK") 
                 }
             }
-
-            let token = chance.string({
-                length: 256,
-                alpha: true,
-                numeric: true
-            })
-
-            await db.collection('parousiasi-tmimatos').insertOne({
-                email,
-                token,
-                verified: false
-            })
-
-            console.log('9');
-            let link = `${process.env.NODE_ENV == "development" ? "http://localhost:3001/api/register?t=" : "https://intro.events.poiw.org/api/register?t="}${token}`
-
-            await send({ 
-                email: email,
-                text: `Χαιρόμαστε που ενδιαφέρεσαι για την παρουσίασή μας! Μπές σε αυτόν τον σύνδεσμο για να επιβεβαιώσεις την εγγραφή σου στην εκδήλωση: ${link}. Αν έχεις κάποια απορία, μπορείς να μας στείλεις στο poiw-team@protonmail.com.`,
-                html: `Χαιρόμαστε που ενδιαφέρεσαι για την παρουσίασή μας! Μπές σε αυτόν τον σύνδεσμο για να επιβεβαιώσεις την εγγραφή σου στην εκδήλωση: <a href="${link}">${link}</a>. Αν έχεις κάποια απορία, μπορείς να μας στείλεις στο poiw-team@protonmail.com.`,
-                subject: " Εγγραφή σε event του po/iw",
-            })
-            console.log('10');
-
-            res.send("OK")
         }
         if (query.t){
             let user = await db.collection("parousiasi-tmimatos").findOne({token: query.t})
