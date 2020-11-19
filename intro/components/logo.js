@@ -4,10 +4,7 @@ export default function Logo(){
             <h1 className="col-12">po/iw <accent>event</accent></h1>
             <p className="col-12">Αναπτύχθηκε και υλοποιήθηκε από το po/iw με τη χρήση ελεύθερου λογισμικού.</p>
             <span className="col-12 p-3">
-                <p>Ο σέρβερ του po/iw microsites είναι μια ευγενική χορηγία του Vercel:</p>
-                <a href="https://vercel.com/?utm_source=poiw-org&utm_campaign=oss" target="_blank">
-                    <img src="../assets/powered-by-vercel.svg" />
-                </a>
+                <p>Ο σέρβερ του po/iw events βρίσκεται στο Ηράκλειο Κρήτης είναι μια ευγενική χορηγία της υπηρεσίας okeanos-knossos του ΕΔΥΤΕ.</p>
             </span>
         </div>
 
