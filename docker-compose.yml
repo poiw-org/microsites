@@ -15,13 +15,39 @@ services:
             - 3000
         labels:
             - traefik.enable=true
-            - traefik.http.routers.microsites_insecure.entrypoints=web
-            - traefik.http.routers.microsites_insecure.rule=Host(`intro.events.poiw.org`)
-            - traefik.http.routers.microsites_insecure.middlewares=redirect@file
-            - traefik.http.routers.microsites.entrypoints=web-secure
-            - traefik.http.routers.microsites.rule=Host(`intro.events.poiw.org`)
-            - traefik.http.routers.microsites.tls.certresolver=letsencrypt
-            - traefik.http.services.microsites.loadbalancer.server.port=3000
+            - traefik.http.routers.intro_insecure.entrypoints=web
+            - traefik.http.routers.intro_insecure.rule=Host(`intro.events.poiw.org`)
+            - traefik.http.routers.intro_insecure.middlewares=redirect@file
+            - traefik.http.routers.intro.entrypoints=web-secure
+            - traefik.http.routers.intro.rule=Host(`intro.events.poiw.org`)
+            - traefik.http.routers.intro.tls.certresolver=letsencrypt
+            - traefik.http.services.intro.loadbalancer.server.port=3000
+            - traefik.docker.network=traefik-proxy    
+        networks:
+            - traefik-proxy
+            - default
+    cas:
+        container_name: cas
+        build: './cas'
+        restart: always
+        environment:
+            - MJ_APIKEY_PRIVATE=${MJ_APIKEY_PRIVATE}
+            - MJ_APIKEY_PUBLIC=${MJ_APIKEY_PUBLIC}
+            - MONGODB_STRING=${MONGODB_STRING}
+            - hcaptcha=${hcaptcha}
+        # ports: 
+        #     - 8080:3000
+        expose:
+            - 3000
+        labels:
+            - traefik.enable=true
+            - traefik.http.routers.cas_insecure.entrypoints=web
+            - traefik.http.routers.cas_insecure.rule=Host(`auth.poiw.org`)
+            - traefik.http.routers.cas_insecure.middlewares=redirect@file
+            - traefik.http.routers.cas.entrypoints=web-secure
+            - traefik.http.routers.cas.rule=Host(`auth.poiw.org`)
+            - traefik.http.routers.cas.tls.certresolver=letsencrypt
+            - traefik.http.services.cas.loadbalancer.server.port=3000
             - traefik.docker.network=traefik-proxy    
         networks:
             - traefik-proxy
