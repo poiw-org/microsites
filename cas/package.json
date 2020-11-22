@@ -10,6 +10,8 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.14.0",
     "@hcaptcha/react-hcaptcha": "^0.2.1",
+    "@sentry/browser": "^5.27.4",
+    "@sentry/tracing": "^5.27.4",
     "axios": "^0.21.0",
     "bootstrap": "^4.5.2",
     "chance": "^1.1.6",
