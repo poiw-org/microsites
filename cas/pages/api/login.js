@@ -30,7 +30,6 @@ module.exports = (req, res) => {
                 password = sha256(password).toString()
 
                 let user = await db.collection("users").findOne({ email, password })
-
                 let unfinished_ticket = await db.collection("tickets").findOne({ email, twofactor})
 
                 if (unfinished_ticket){
@@ -55,12 +54,16 @@ module.exports = (req, res) => {
 
                     await db.collection("tickets").updateOne(
                         {_id: unfinished_ticket._id},
-                        {$set: {
+                        {
+                            $set: {
                                 ticket,
+                            },
+                            $unset:{
                                 twofactor: ""
                             }
                         }, 
                     )
+
 
                     await send({
                         text: `Νέα είσοδος από IP ${req.headers['x-forwarded-for']} στην υπηρεσία ${service}. Αν δεν ήσουν εσύ, άλλαξε κωδικό άμεσα και ενημέρωσε την ομάδα!`,
@@ -93,41 +96,44 @@ module.exports = (req, res) => {
                 }
             } 
             if(password){
-                await hcaptcha
-                .validate(captcha)
-                .catch(e=>res.status(400).send('Recaptcha verification failed'))
+                password = sha256(password).toString()
+                let user = await db.collection("users").findOne({ email, password })
 
-                let twofactor = chance.string({
-                    length: 5,
-                    numeric: true
-                })
+                if(user){
+                    let twofactor = chance.string({
+                        length: 5,
+                        numeric: true
+                    })
 
-                await db.collection("tickets").deleteMany({
-                    email
-                })
+                    await db.collection("tickets").deleteMany({
+                        email
+                    })
 
-                await db.collection("tickets").insertOne({
-                    createdAt: new Date(),
-                    email,
-                    twofactor,
-                    service
-                })
+                    await db.collection("tickets").insertOne({
+                        createdAt: new Date(),
+                        email,
+                        twofactor,
+                        service
+                    })
 
-                await send({
-                    text: `Ο κωδικός επαλήθευσης για την είσοδό σου μέσω του po/iw CAS είναι: ${twofactor}`,
-                    email,
-                    subject: "Κωδικός επαλήθευσης"
-                })
+                    await send({
+                        text: `Ο κωδικός επαλήθευσης για την είσοδό σου μέσω του po/iw CAS είναι: ${twofactor}`,
+                        email,
+                        subject: "Κωδικός επαλήθευσης"
+                    })
 
-                await log({
-                    email,
-                    type: 'login-with-password-2factor-requested',
-                    service
-                })
+                    await log({
+                        email,
+                        type: 'login-with-password-2factor-requested',
+                        service
+                    })
 
-                res.json({
-                    requiresTwoFactor: true
-                })
+                    res.json({
+                        requiresTwoFactor: true
+                    })
+                }else{
+                    res.status(400).send('Wrong password.')
+                }
             }
             else {
 
@@ -137,7 +143,7 @@ module.exports = (req, res) => {
             }
         })
         .catch(e => {
-            //console.log(e)
+            console.log(e)
             res.status(500)
         })
 }

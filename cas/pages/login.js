@@ -252,7 +252,6 @@ class Login extends Component {
                             service,
                             twofactor: event,
                         })
-                        console.log(data)
                         if(ticket){
                             this.setState({
                                 message: {
