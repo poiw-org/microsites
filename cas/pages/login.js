@@ -1,7 +1,7 @@
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import Logo from '../components/logo'
-import {Component} from "react"
+import {Component, createRef} from "react"
 import axios from "axios";
 import Head from 'next/head'
 import Alert from 'react-bootstrap/Alert'
@@ -32,7 +32,7 @@ class Login extends Component {
             phone: "",
             username: "",
             hcaptcha: "",
-            recaptchaRef : React.createRef(),
+            recaptchaRef : createRef(),
             service: props.service,
             schools:[
                 "Ανωτάτη Σχολή Καλών Τεχνών (Α.Σ.Κ.Τ.)",
