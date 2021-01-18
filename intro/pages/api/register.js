@@ -53,7 +53,6 @@ module.exports = async ({body,query,method},res) => {
                         verified: false
                     })
     
-                    console.log('9');
                     let link = `${process.env.NODE_ENV == "development" ? "http://localhost:3001/api/register?t=" : "https://intro.events.poiw.org/api/register?t="}${token}`
     
                     await send({ 
@@ -62,7 +61,6 @@ module.exports = async ({body,query,method},res) => {
                         html: `Χαιρόμαστε που ενδιαφέρεσαι για την παρουσίασή μας! Μπές σε αυτόν τον σύνδεσμο για να επιβεβαιώσεις την εγγραφή σου στην εκδήλωση: <a href="${link}">${link}</a>. Αν έχεις κάποια απορία, μπορείς να μας στείλεις στο poiw-team@protonmail.com.`,
                         subject: " Εγγραφή σε event του po/iw",
                     })
-                    console.log('10');
     
                     res.send("OK") 
                 }
