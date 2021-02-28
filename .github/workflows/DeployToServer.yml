@@ -11,7 +11,7 @@ on:
     types: [cas-update]
 
 jobs:
-  build_on_hermes:
+  Hermes:
     runs-on: ['hermes']
     env:
         MJ_APIKEY_PUBLIC: ${{ secrets.MJ_APIKEY_PUBLIC }}
@@ -19,13 +19,15 @@ jobs:
         MONGODB_STRING: ${{ secrets.MONGODB_STRING }}
         recaptcha: ${{ secrets.recaptcha }}
     steps:
-      - uses: actions/checkout@v2
-
+      - name: Checkout repository
+        uses: actions/checkout@v2
+          with:
+               submodules: 'recursive'
       - name: Build docker images
         run: docker-compose build
       - name: Deploy
         run: docker-compose up -d
-  build_on_calliroe:
+  Calliroe:
     runs-on: ['calliroe']
     env:
         MJ_APIKEY_PUBLIC: ${{ secrets.MJ_APIKEY_PUBLIC }}
@@ -33,8 +35,10 @@ jobs:
         MONGODB_STRING: ${{ secrets.MONGODB_STRING }}
         recaptcha: ${{ secrets.recaptcha }}
     steps:
-      - uses: actions/checkout@v2
-
+      - name: Checkout repository
+        uses: actions/checkout@v2
+          with:
+               submodules: 'recursive'
       - name: Build docker images
         run: docker-compose build
       - name: Deploy
