@@ -22,8 +22,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
         with:
-          ssh-key: ${{ secrets.SSH_KEY }}
-          submodules: true
+          submodules: 'true'
       - name: Build docker images
         run: docker-compose build
       - name: Deploy
@@ -39,8 +38,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
         with:
-          ssh-key: ${{ secrets.SSH_KEY }}
-          submodules: true
+          submodules: 'true'
       - name: Build docker images
         run: docker-compose build
       - name: Deploy
