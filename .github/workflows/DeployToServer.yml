@@ -23,6 +23,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           submodules: 'true'
+      - run: 'cd microsites && ls'
       - name: Build docker images
         run: docker-compose build
       - name: Deploy
@@ -39,7 +40,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           submodules: 'true'
-      - run: 'ls'
+      - run: 'cd microsites && ls'
       - name: Build docker images
         run: docker-compose build
       - name: Deploy
