@@ -1,0 +1,3 @@
+[submodule "cas"]
+	path = cas
+	url = https://github.com/poiw-org/cas
