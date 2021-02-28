@@ -21,8 +21,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-          with:
-               submodules: 'recursive'
+        with:
+          submodules: 'recursive'
       - name: Build docker images
         run: docker-compose build
       - name: Deploy
@@ -37,8 +37,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-          with:
-               submodules: 'recursive'
+        with:
+          submodules: 'recursive'
       - name: Build docker images
         run: docker-compose build
       - name: Deploy
